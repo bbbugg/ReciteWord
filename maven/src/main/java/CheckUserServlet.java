@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+/**
+ * @Description: 管理员功能，看所有用户信息
+ * @Author: Bug
+ * @Date: 16:57 2022/12/8
+ */
 
 @WebServlet(urlPatterns = "/CheckUser")
 public class CheckUserServlet extends HttpServlet {

@@ -6,7 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
-
+/**
+ * @Description: 注册
+ * @Author: Bug
+ * @Date: 17:03 2022/12/8
+ */
+         
 @WebServlet(urlPatterns = "/Register")
 public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -199,17 +204,112 @@ public class RegisterServlet extends HttpServlet {
             response.getWriter().print("108");
             throw new RuntimeException(e);
         }
-        checkOK=0;
+        checkOK = 0;
+
+        ///////////创建单词表
+        String driverName2 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+        String dbURL2 = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word";
+        String userName2 = "sa";
+        String userPwd2 = "12345";
+
         try {
-            if(createNewTable(response,userId,CET4num,CET6num)==1){
-                checkOK=1;
-            }
+            Class.forName(driverName2);
+//            System.out.println("加载驱动2成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.getWriter().print("101");
+//            System.out.println("加载驱动2失败！");
+        }
+        Connection conn2 = null;
+        try {
+            conn2 = DriverManager.getConnection(dbURL2, userName2, userPwd2);
+//            System.out.println("连接数据库2成功！");
+        } catch (Exception e) {
+            response.getWriter().print("102");
+            e.printStackTrace();
+            conn2 = null;
+//            System.out.println("数据库2连接失败！");
+        }
+        if (conn2 == null) {
+            response.getWriter().print("101.5");
+            return;
+        }
+        String createCET4Sql = "create table CET4_" + userId + " (wordId int primary key,state int not null)";
+        String createCET6Sql = "create table CET6_" + userId + " (wordId int primary key,state int not null)";
+        PreparedStatement pstmt01;
+        PreparedStatement pstmt02;
+        try {
+            pstmt01 = conn2.prepareStatement(createCET4Sql);
+            pstmt02 = conn2.prepareStatement(createCET6Sql);
         } catch (SQLException e) {
             response.getWriter().print("108");
-            checkOK = 0;
-            System.out.println("初始化单词异常!");
+            System.out.println("获取数据库信息连接失败");
             throw new RuntimeException(e);
         }
+        int checkOK2 = 0;
+        try {
+            int rs01 = pstmt01.executeUpdate();
+            int rs02 = pstmt02.executeUpdate();
+            if (rs01 == 0 && rs02 == 0) {
+                System.out.println("创建初始化单词表成功!");
+                checkOK2 = 1;
+            }
+
+        } catch (SQLException e) {
+            response.getWriter().print("108");
+            System.out.println("创建初始化单词表失败！");
+            throw new RuntimeException(e);
+        }
+        if (checkOK2 == 0) {
+            return;
+        }
+        /////////////////////初始化单词
+        PreparedStatement pstmt03;
+        for (int i = 1; i <= CET4num; i++) {
+            String insertCET4Sql = "insert into CET4_" + userId + " values(" + i + ",0)";
+            try {
+                pstmt03 = conn2.prepareStatement(insertCET4Sql);
+                pstmt03.executeUpdate();
+            } catch (SQLException e) {
+                response.getWriter().print("108");
+                System.out.println("4级单词初始失败");
+                throw new RuntimeException(e);
+            }
+        }
+        for (int i = 1; i <= CET6num; i++) {
+            String insertCET6Sql = "insert into CET6_" + userId + " values(" + i + ",0)";
+            try {
+                pstmt03 = conn2.prepareStatement(insertCET6Sql);
+                pstmt03.executeUpdate();
+            } catch (SQLException e) {
+                response.getWriter().print("108");
+                System.out.println("6级单词初始失败");
+                throw new RuntimeException(e);
+            }
+        }
+        int count1 = 0;
+        int count2 = 0;
+        try {
+            PreparedStatement pstmt04 = conn2.prepareStatement("select count(*) from CET4_" + userId);
+            PreparedStatement pstmt05 = conn2.prepareStatement("select count(*) from CET6_" + userId);
+            ResultSet rs01 = pstmt04.executeQuery();
+            ResultSet rs02 = pstmt05.executeQuery();
+            rs01.next();
+            rs02.next();
+            count1 = rs01.getInt(1);
+            count2 = rs02.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        if (count1 == CET4num && count2 == CET6num) {
+            checkOK = 1;
+            System.out.println("初始化单词成功！");
+        } else {
+            response.getWriter().print("108");
+            System.out.println("初始化单词失败！");
+            return;
+        }
+
         if (checkOK == 0) {
             return;
         }
@@ -221,112 +321,12 @@ public class RegisterServlet extends HttpServlet {
         //解决将数据传递给网页时的中文显示问题
 
 //        response.getWriter().print("欢迎, " + username + ", 成为第" + userId + "位用户, 密码为" + userpassword);
-        response.getWriter().print(200);
 
+        response.getWriter().print("200");
         System.out.println("注册成功" + ", 成为第" + userId + "位用户。");
 
     }
 
-
-    protected int createNewTable(HttpServletResponse response, long userId, int CET4num, int CET6num) throws IOException, SQLException {
-        String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word";
-        String userName = "sa";
-        String userPwd = "12345";
-
-        try {
-            Class.forName(driverName);
-//            System.out.println("加载驱动2成功！");
-        } catch (Exception e) {
-            response.getWriter().print("101");
-            e.printStackTrace();
-//            System.out.println("加载驱动2失败！");
-        }
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(dbURL, userName, userPwd);
-//            System.out.println("连接数据库2成功！");
-        } catch (Exception e) {
-            response.getWriter().print("102");
-            e.printStackTrace();
-            conn = null;
-//            System.out.println("数据库2连接失败！");
-        }
-        if (conn == null) {
-            response.getWriter().print("101.5");
-            return 0;
-        }
-        String createCET4Sql = "create table CET4_" + userId + " (wordId int primary key,state int not null)";
-        String createCET6Sql = "create table CET6_" + userId + " (wordId int primary key,state int not null)";
-        PreparedStatement pstmt1;
-        PreparedStatement pstmt2;
-        try {
-            pstmt1 = conn.prepareStatement(createCET4Sql);
-            pstmt2 = conn.prepareStatement(createCET6Sql);
-        } catch (SQLException e) {
-            response.getWriter().print("108");
-            System.out.println("获取数据库信息连接失败");
-            throw new RuntimeException(e);
-        }
-        int checkOK = 0;
-        try {
-            int rs1 = pstmt1.executeUpdate();
-            int rs2 = pstmt2.executeUpdate();
-            if (rs1 == 0 && rs2 == 0) {
-                System.out.println("创建初始化单词表成功!");
-                checkOK = 1;
-            }
-
-        } catch (SQLException e) {
-            response.getWriter().print("108");
-            System.out.println("创建初始化单词表失败！");
-            throw new RuntimeException(e);
-        }
-        if (checkOK == 0) {
-            return 0;
-        }
-        PreparedStatement pstmt3;
-        for (int i = 1; i <= CET4num; i++) {
-            String insertCET4Sql = "insert into CET4_" + userId + " values(" + i + ",0)";
-            try {
-                pstmt3 = conn.prepareStatement(insertCET4Sql);
-                pstmt3.executeUpdate();
-            } catch (SQLException e) {
-                response.getWriter().print("108");
-                System.out.println("4级单词初始失败");
-                throw new RuntimeException(e);
-            }
-        }
-        for (int i = 1; i <= CET6num; i++) {
-            String insertCET6Sql = "insert into CET6_" + userId + " values(" + i + ",0)";
-            try {
-                pstmt3 = conn.prepareStatement(insertCET6Sql);
-                pstmt3.executeUpdate();
-            } catch (SQLException e) {
-                response.getWriter().print("108");
-                System.out.println("6级单词初始失败");
-                throw new RuntimeException(e);
-            }
-        }
-        PreparedStatement pstmt4= conn.prepareStatement("select count(*) from CET4_" + userId);
-        PreparedStatement pstmt5= conn.prepareStatement("select count(*) from CET6_" + userId);
-
-        ResultSet rs1 = pstmt4.executeQuery();
-        ResultSet rs2 = pstmt5.executeQuery();
-        rs1.next();
-        rs2.next();
-        int count1 = rs1.getInt(1);
-        int count2 = rs2.getInt(1);
-        if(count1==CET4num&&count2==CET6num){
-            System.out.println("初始化单词成功！");
-            return 1;
-        }
-        else{
-            response.getWriter().print("108");
-            System.out.println("初始化单词失败！");
-            return 0;
-        }
-    }
 
     public static boolean isLetterDigit(String str) {
         String regex = "^[a-z0-9A-Z]+$";

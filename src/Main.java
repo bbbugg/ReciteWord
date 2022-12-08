@@ -1,9 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        for (int i = 0; i < 200; i++) {
-            int num = (int) (Math.random() * 100)+1;
-            System.out.println(num);
-        }
+        System.out.println("查询用户单词成功!\n\t未选\t未背\t认识\t不认识\nCET4:"+3+"\t"+3+"\t"+3425+"\t"+989);
 
     }
 

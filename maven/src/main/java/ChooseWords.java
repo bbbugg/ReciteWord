@@ -7,7 +7,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.ArrayList;
-
+/**
+ * @Description: 选词
+ * @Author: Bug
+ * @Date: 17:03 2022/12/8
+ */
+         
 @WebServlet(urlPatterns = "/Choose")
 public class ChooseWords extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -195,7 +200,7 @@ public class ChooseWords extends HttpServlet {
         return oneNewWord;
     }
 
-    protected long getUserId(String username) {
+    protected static long getUserId(String username) {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
         String userName = "sa";
@@ -220,13 +225,19 @@ public class ChooseWords extends HttpServlet {
         if (conn == null) {
             return 0;
         }
-        String getUserIdSql = "select userId from user_table where username = '" + username + "'";
+        String getUserIdSql = "select userId from user_table where username = ?";
 
         PreparedStatement pstmt;
         try {
             pstmt = conn.prepareStatement(getUserIdSql);
         } catch (SQLException e) {
             System.out.println("获取用户信息连接失败");
+            throw new RuntimeException(e);
+        }
+        try {
+            pstmt.setString(1, username);
+        } catch (SQLException e) {
+            System.out.println("用户名问题");
             throw new RuntimeException(e);
         }
         int checkOK = 0;

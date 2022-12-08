@@ -6,6 +6,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+/**
+ * @Description: 标记单词
+ * @Author: Bug
+ * @Date: 16:57 2022/12/8
+ */
 
 @WebServlet(urlPatterns = "/Recite")//目录匹配
 public class ReciteWord extends HttpServlet {
@@ -47,7 +52,7 @@ public class ReciteWord extends HttpServlet {
         String bookname = request.getParameter("bookname");
         int wordState = Integer.parseInt(request.getParameter("wordstate"));/////////2是认识，3是不认识
 
-        long userId = getUserId(username);
+        long userId = ChooseWords.getUserId(username);
 
         //////////更改
 
@@ -73,59 +78,9 @@ public class ReciteWord extends HttpServlet {
     }
 
 
-    protected long getUserId(String username) {
-        String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
-        String userName = "sa";
-        String userPwd = "12345";
-
-        try {
-            Class.forName(driverName);
-//            System.out.println("加载驱动2成功！");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("加载驱动2失败！");
-        }
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(dbURL, userName, userPwd);
-//            System.out.println("连接数据库2成功！");
-        } catch (Exception e) {
-            e.printStackTrace();
-            conn = null;
-            System.out.println("连接数据库2失败！");
-        }
-        if (conn == null) {
-            return 0;
-        }
-        String getUserIdSql = "select userId from user_table where username = '" + username + "'";
-
-        PreparedStatement pstmt;
-        try {
-            pstmt = conn.prepareStatement(getUserIdSql);
-        } catch (SQLException e) {
-            System.out.println("获取用户信息连接失败");
-            throw new RuntimeException(e);
-        }
-        int checkOK = 0;
-        ResultSet rs;
-        long userId;
-        try {
-            rs = pstmt.executeQuery();
-            rs.next();
-            userId = rs.getLong(1);
-        } catch (SQLException e) {
-            System.out.println("获取用户信息失败");
-            throw new RuntimeException(e);
-        }
-        return userId;
-    }
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
-
-
     }
 
 

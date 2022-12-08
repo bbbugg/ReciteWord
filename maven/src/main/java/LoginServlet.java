@@ -7,6 +7,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+/**
+ * @Description: 登录
+ * @Author: Bug
+ * @Date: 16:57 2022/12/8
+ */
 
 @WebServlet(urlPatterns = "/Login")//目录匹配
 public class LoginServlet extends HttpServlet {
@@ -30,7 +35,6 @@ public class LoginServlet extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
             //创建的网页代码显示
             response.getWriter().print("101");
-            System.out.println("用户名或密码错误");
             e.printStackTrace();
             System.out.println("加载驱动失败！");
         }
@@ -42,7 +46,6 @@ public class LoginServlet extends HttpServlet {
             //解决将数据传递给网页时的中文显示问题
             //创建的网页代码显示
             response.getWriter().print("102");
-            System.out.println("用户名或密码错误");
             e.printStackTrace();
             conn = null;
             System.out.println("数据库连接失败！");

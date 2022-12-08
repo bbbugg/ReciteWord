@@ -166,7 +166,6 @@ public class UserCondition extends HttpServlet {
             response.getWriter().print("200");
         }
 
-
     }
 
 
@@ -174,5 +173,4 @@ public class UserCondition extends HttpServlet {
             throws ServletException, IOException {
         doGet(request, response);
     }
-
 }

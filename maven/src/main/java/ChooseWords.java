@@ -83,8 +83,8 @@ public class ChooseWords extends HttpServlet {
         String nonChooseSql = "select * from " + bookname + "_" + userId + " where state=0 ";
 
         for (int j = 0; j < wordNumber; j++) {
-            if(nonChooseNum==0){
-                System.out.println("最多添加"+j+"个单词,已添加。");
+            if (nonChooseNum == 0) {
+                System.out.println("最多添加" + j + "个单词,已添加。");
                 break;
             }
 

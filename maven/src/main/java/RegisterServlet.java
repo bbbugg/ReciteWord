@@ -327,12 +327,10 @@ public class RegisterServlet extends HttpServlet {
 
     }
 
-
     public static boolean isLetterDigit(String str) {
         String regex = "^[a-z0-9A-Z]+$";
         return str.matches(regex);
     }
-
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);

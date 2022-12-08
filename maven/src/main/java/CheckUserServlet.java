@@ -100,7 +100,6 @@ public class CheckUserServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
-
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

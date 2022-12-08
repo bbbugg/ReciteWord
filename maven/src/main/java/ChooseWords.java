@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.ArrayList;
+
 /**
  * @Description: 选词
  * @Author: Bug
  * @Date: 17:03 2022/12/8
  */
-         
+
 @WebServlet(urlPatterns = "/Choose")
 public class ChooseWords extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -82,6 +83,10 @@ public class ChooseWords extends HttpServlet {
         String nonChooseSql = "select * from " + bookname + "_" + userId + " where state=0 ";
 
         for (int j = 0; j < wordNumber; j++) {
+            if(nonChooseNum==0){
+                System.out.println("最多添加"+j+"个单词,已添加。");
+                break;
+            }
 
             int num = (int) (Math.random() * (nonChooseNum) + 1);
 
@@ -108,8 +113,8 @@ public class ChooseWords extends HttpServlet {
                 response.getWriter().print("108");
                 throw new RuntimeException(e);
             }
-            Word oneNewWord=getNewWord(onewordId,bookname);
-            if(oneNewWord==null){
+            Word oneNewWord = getNewWord(onewordId, bookname);
+            if (oneNewWord == null) {
                 response.getWriter().print("108");
                 System.out.println("添加新单词失败！");
             }
@@ -129,13 +134,33 @@ public class ChooseWords extends HttpServlet {
         }
         System.out.println("新添的单词");
         printNewWord(newWord);
-        response.setCharacterEncoding("gbk");
-        PrintWriter writer = response.getWriter();
+//        response.setCharacterEncoding("gbk");
+//        PrintWriter writer = response.getWriter();
+//        for (Word oneNewWord : newWord) {
+//            writer.write(oneNewWord.wordId + ":\t" + oneNewWord.word + " \t" + oneNewWord.wordTranslation + " \t" + oneNewWord.wordPhonetic + "\n");
+//            writer.flush();
+//        }
+//        writer.close();//注意刷新和关闭缓存
+
+
+        response.setContentType("text/html;charset=UTF-8");
+        response.getWriter().print("<table width=\"100%\"border=\"1\"cellspacing=\"0\">\n" +
+                "  <tr height=\"10\">\n" +
+                "    <th>单词Id</th>\n" +
+                "    <th>单词</th>\n" +
+                "    <th>意思</th>\n" +
+                "    <th>音标</th>\n" +
+                "  </tr>");
         for (Word oneNewWord : newWord) {
-            writer.write(oneNewWord.wordId + ":\t" + oneNewWord.word + " \t" + oneNewWord.wordTranslation + " \t" + oneNewWord.wordPhonetic + "\n");
-            writer.flush();
+            response.getWriter().print("  <tr align=\"center\">\n" +
+                    "    <td>" + oneNewWord.wordId + "</td>\n" +
+                    "    <td>" + oneNewWord.word + "</td>\n" +
+                    "    <td>" + oneNewWord.wordTranslation + "</td>\n" +
+                    "    <td>" + oneNewWord.wordPhonetic + "</td>\n" +
+                    "  </tr>");
+//            response.getWriter().print(oneNewWord.wordId + ":&#09" + oneNewWord.word + " &#09" + oneNewWord.wordTranslation + " &#09" + oneNewWord.wordPhonetic + "</br>");
         }
-        writer.close();//注意刷新和关闭缓存
+        response.getWriter().print("</table>");
     }
 
     void printNewWord(ArrayList<Word> newWord) {

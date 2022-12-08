@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
+
 /**
  * @Description: 每个用户的背单词信息
  * @Author: Bug
@@ -130,14 +131,38 @@ public class UserCondition extends HttpServlet {
             throw new RuntimeException(e);
         }
         if (CET4num == CET4UserNum[0] + CET4UserNum[1] + CET4UserNum[2] + CET4UserNum[3] && CET6num == CET6UserNum[0] + CET6UserNum[1] + CET6UserNum[2] + CET6UserNum[3]) {
-            System.out.println("查询用户单词成功!\n用户:"+username+"\nCET4:未选" + CET4UserNum[0] + " 已选未背:" + CET4UserNum[1] + " 认识:" + CET4UserNum[2] + " 不认识:" + CET4UserNum[3] + "\nCET6:未选" + CET6UserNum[0] + " 已选未背:" + CET6UserNum[1] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
+            System.out.println("查询用户单词成功!\n用户:" + username + "\nCET4:未选" + CET4UserNum[0] + " 已选未背:" + CET4UserNum[1] + " 认识:" + CET4UserNum[2] + " 不认识:" + CET4UserNum[3] + "\nCET6:未选" + CET6UserNum[0] + " 已选未背:" + CET6UserNum[1] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
 
             //解决将数据传递给网页时的中文显示问题
             response.setContentType("text/html;charset=UTF-8");
             //创建的网页代码显示
-            response.getWriter().print("查询用户单词成功!</br>用户:"+username+"</br>CET4:未选" + CET4UserNum[0] + " 已选未背:" + CET4UserNum[1] + " 认识:" + CET4UserNum[2] + " 不认识:" + CET4UserNum[3] + "</br>CET6:未选" + CET6UserNum[0] + " 已选未背:" + CET6UserNum[1] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
-        }
-        else{
+//            response.getWriter().print("查询用户单词成功!</br>用户:"+username+"</br>CET4:未选" + CET4UserNum[0] + " 已选未背:" + CET4UserNum[1] + " 认识:" + CET4UserNum[2] + " 不认识:" + CET4UserNum[3] + "</br>CET6:未选" + CET6UserNum[0] + " 已选未背:" + CET6UserNum[1] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
+            response.getWriter().print("查询用户单词成功!</br>用户:" + username + "</br>");
+            response.getWriter().print("<table width=\"100%\"border=\"1\"cellspacing=\"0\">\n" +
+                    "  <tr height=\"10\">\n" +
+                    "    <th>单词书</th>\n" +
+                    "    <th>未选</th>\n" +
+                    "    <th>已选未背</th>\n" +
+                    "    <th>认识</th>\n" +
+                    "    <th>不认识</th>\n" +
+                    "  </tr>\n" +
+                    "  <tr align=\"center\">\n" +
+                    "    <td>CET4</td>\n" +
+                    "    <td>" + CET4UserNum[0] + "</td>\n" +
+                    "    <td>" + CET4UserNum[1] + "</td>\n" +
+                    "    <td>" + CET4UserNum[2] + "</td>\n" +
+                    "    <td>" + CET4UserNum[3] + "</td>\n" +
+                    "  </tr>\n" +
+                    "  </tr>\n" +
+                    "  <tr align=\"center\">\n" +
+                    "    <td>CET6</td>\n" +
+                    "    <td>" + CET6UserNum[0] + "</td>\n" +
+                    "    <td>" + CET6UserNum[1] + "</td>\n" +
+                    "    <td>" + CET6UserNum[2] + "</td>\n" +
+                    "    <td>" + CET6UserNum[3] + "</td>\n" +
+                    "  </tr>\n" +
+                    "</table>");
+        } else {
             response.getWriter().print("200");
         }
 

@@ -15,6 +15,7 @@ import java.util.Map;
  * @Date: 19:24 2022/12/8
  */
 
+@WebServlet(urlPatterns = "/Transfer")
 public class TransferWord extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -54,8 +55,8 @@ public class TransferWord extends HttpServlet {
 
         ///////////////////选单词
         String nonReciteNumSql = "select count(*) from " + bookname + "_" + userId + " where state=1 ";
-        String nonKnownNumSql = "select count(*) from " + bookname + "_" + userId + " where state=2 ";
-        String nonReciteNonKnownNumSql = "select count(*) from " + bookname + "_" + userId + " where state=1 or state=2";
+        String nonKnownNumSql = "select count(*) from " + bookname + "_" + userId + " where state=3 ";
+        String nonReciteNonKnownNumSql = "select count(*) from " + bookname + "_" + userId + " where state=1 or state=3";
 
         int nonNum = 0;
 
@@ -80,7 +81,7 @@ public class TransferWord extends HttpServlet {
         }
 
         if (nonNum == 0) {
-            response.getWriter().print("110");
+            response.getWriter().print("109");
             System.out.println(bookname + "所有单词已背完!");
             return;
         }
@@ -89,8 +90,8 @@ public class TransferWord extends HttpServlet {
         ResultSet rs2;
         PreparedStatement pstmt2;
         String nonReciteSql = "select * from " + bookname + "_" + userId + " where state=1 ";
-        String nonKnownSql = "select count(*) from " + bookname + "_" + userId + " where state=2 ";
-        String nonReciteNonKnownSql = "select count(*) from " + bookname + "_" + userId + " where state=1 or state=2";
+        String nonKnownSql = "select * from " + bookname + "_" + userId + " where state=3 ";
+        String nonReciteNonKnownSql = "select * from " + bookname + "_" + userId + " where state=1 or state=3";
 
         try {
             if (reciteState == 1) {
@@ -144,9 +145,6 @@ public class TransferWord extends HttpServlet {
         writer.write(map.toString());
 
     }
-
-
-
 
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

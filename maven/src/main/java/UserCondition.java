@@ -4,9 +4,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.*;
-import java.util.ArrayList;
+/**
+ * @Description: 每个用户的背单词信息
+ * @Author: Bug
+ * @Date: 19:20 2022/12/8
+ */
 
 @WebServlet(urlPatterns = "/Condition")
 public class UserCondition extends HttpServlet {
@@ -129,11 +132,6 @@ public class UserCondition extends HttpServlet {
         if (CET4num == CET4UserNum[0] + CET4UserNum[1] + CET4UserNum[2] + CET4UserNum[3] && CET6num == CET6UserNum[0] + CET6UserNum[1] + CET6UserNum[2] + CET6UserNum[3]) {
             System.out.println("查询用户单词成功!\n用户:"+username+"\nCET4:未选" + CET4UserNum[0] + " 已选未背:" + CET4UserNum[1] + " 认识:" + CET4UserNum[2] + " 不认识:" + CET4UserNum[3] + "\nCET6:未选" + CET6UserNum[0] + " 已选未背:" + CET6UserNum[1] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
 
-//            response.setCharacterEncoding("gbk");
-//            PrintWriter writer = response.getWriter();
-//            writer.write("查询用户单词成功!\nCET4:未选" + CET4UserNum[0] + " 已选未背:" + CET4UserNum[1] + " 认识:" + CET4UserNum[2] + " 不认识:" + CET4UserNum[3] + "\nCET6未选" + CET6UserNum[0] + " 已选未背:" + CET6UserNum[1] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
-//            writer.flush();
-//            writer.close();//注意刷新和关闭缓存
             //解决将数据传递给网页时的中文显示问题
             response.setContentType("text/html;charset=UTF-8");
             //创建的网页代码显示

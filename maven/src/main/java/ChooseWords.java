@@ -61,24 +61,17 @@ public class ChooseWords extends HttpServlet {
 
         try {
             pstmt1 = conn.prepareStatement(nonChooseNumSql);
+            ResultSet rs1 = pstmt1.executeQuery();
+            rs1.next();
+            nonChooseNum = rs1.getInt(1);
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("获取未选单词失败");
             throw new RuntimeException(e);
         }
-        try {
-            ResultSet rs1 = pstmt1.executeQuery();
-            rs1.next();
-            nonChooseNum = rs1.getInt(1);
-
-        } catch (SQLException e) {
-            response.getWriter().print("108");
-            System.out.println("无数据!");
-            throw new RuntimeException(e);
-        }
         if (nonChooseNum == 0) {
             response.getWriter().print("109");
-            System.out.println(bookname + "所有单词已背完!");
+            System.out.println(bookname + "所有单词已选完!");
             return;
         }
         ///////////////////选词
@@ -95,7 +88,6 @@ public class ChooseWords extends HttpServlet {
             try {
                 pstmt2 = conn.prepareStatement(nonChooseSql);
                 rs2 = pstmt2.executeQuery();
-                rs2.next();
             } catch (SQLException e) {
                 response.getWriter().print("108");
                 System.out.println("单词数据获取失败!");
@@ -152,7 +144,7 @@ public class ChooseWords extends HttpServlet {
         }
     }
 
-    Word getNewWord(int onewordId, String bookname) {
+    static Word getNewWord(int onewordId, String bookname) {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
         String userName = "sa";
@@ -186,7 +178,7 @@ public class ChooseWords extends HttpServlet {
             rs.next();
         } catch (SQLException e) {
             System.out.println("单词数据获取失败!");
-            throw new RuntimeException(e);
+            return null;
         }
         Word oneNewWord;
         try {
@@ -195,7 +187,7 @@ public class ChooseWords extends HttpServlet {
             String onewordPhonetic = rs.getString(4);
             oneNewWord = new Word(onewordId, oneword, onewordTranslation, onewordPhonetic);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return null;
         }
         return oneNewWord;
     }

@@ -51,7 +51,10 @@ public class ChooseWords extends HttpServlet {
         int wordNumber = Integer.parseInt(request.getParameter("wordnumber"));
         String bookname = request.getParameter("bookname");
 
-        long userId = getUserId(username);
+        long userId = getUserId(username,response);
+        if(userId==0){
+            return;
+        }
 
 
         /////////////////////////////判断没选的单词
@@ -68,7 +71,7 @@ public class ChooseWords extends HttpServlet {
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("获取未选单词失败");
-            throw new RuntimeException(e);
+            return;
         }
         if (nonChooseNum == 0) {
             response.getWriter().print("109");
@@ -96,14 +99,14 @@ public class ChooseWords extends HttpServlet {
             } catch (SQLException e) {
                 response.getWriter().print("108");
                 System.out.println("单词数据获取失败!");
-                throw new RuntimeException(e);
+                return;
             }
             for (int i = 0; i < num; i++) {
                 try {
                     rs2.next();
                 } catch (SQLException e) {
                     response.getWriter().print("108");
-                    throw new RuntimeException(e);
+                    return;
                 }
             }
             int onewordId;
@@ -111,24 +114,34 @@ public class ChooseWords extends HttpServlet {
                 onewordId = rs2.getInt(1);
             } catch (SQLException e) {
                 response.getWriter().print("108");
-                throw new RuntimeException(e);
+                return;
             }
             Word oneNewWord = getNewWord(onewordId, bookname);
             if (oneNewWord == null) {
                 response.getWriter().print("108");
                 System.out.println("添加新单词失败！");
+                return;
             }
 
             newWord.add(oneNewWord);
 
             //////////////标记为已背过
             String recitedSql = "update " + bookname + "_" + userId + " set state =1 where wordId=" + oneNewWord.wordId;
+            int checkOK=0;
             try {
                 pstmt2 = conn.prepareStatement(recitedSql);
                 int rs3 = pstmt2.executeUpdate();
+                if(rs3==1){
+                    checkOK=1;
+                }
             } catch (SQLException e) {
                 response.getWriter().print("108");
-                throw new RuntimeException(e);
+                return;
+            }
+            if(checkOK == 0){
+                response.getWriter().print("108");
+                System.out.println("添加新单词失败！");
+                return;
             }
             nonChooseNum--;
         }
@@ -217,7 +230,7 @@ public class ChooseWords extends HttpServlet {
         return oneNewWord;
     }
 
-    protected static long getUserId(String username) {
+    protected static long getUserId(String username,HttpServletResponse response) throws IOException {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
         String userName = "sa";
@@ -227,15 +240,16 @@ public class ChooseWords extends HttpServlet {
             Class.forName(driverName);
             System.out.println("加载驱动2成功！");
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("加载驱动2失败！");
+            response.getWriter().print("101");
+            return 0;
         }
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(dbURL, userName, userPwd);
             System.out.println("连接数据库2成功！");
         } catch (Exception e) {
-            e.printStackTrace();
+            response.getWriter().print("102");
             conn = null;
             System.out.println("连接数据库2失败！");
         }
@@ -247,15 +261,11 @@ public class ChooseWords extends HttpServlet {
         PreparedStatement pstmt;
         try {
             pstmt = conn.prepareStatement(getUserIdSql);
-        } catch (SQLException e) {
-            System.out.println("获取用户信息连接失败");
-            throw new RuntimeException(e);
-        }
-        try {
             pstmt.setString(1, username);
         } catch (SQLException e) {
-            System.out.println("用户名问题");
-            throw new RuntimeException(e);
+            System.out.println("获取用户信息连接失败");
+            response.getWriter().print("105");
+            return 0;
         }
         int checkOK = 0;
         ResultSet rs;
@@ -266,7 +276,8 @@ public class ChooseWords extends HttpServlet {
             userId = rs.getLong(1);
         } catch (SQLException e) {
             System.out.println("获取用户信息失败");
-            throw new RuntimeException(e);
+            response.getWriter().print("105");
+            return 0;
         }
         return userId;
     }

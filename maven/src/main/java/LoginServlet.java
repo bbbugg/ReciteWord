@@ -72,25 +72,13 @@ public class LoginServlet extends HttpServlet {
         PreparedStatement pstmt;
         try {
             pstmt = conn.prepareStatement(LoginSql);
-        } catch (SQLException e) {
-            System.out.println("获取登录信息连接失败");
-            response.getWriter().print("105");
-            throw new RuntimeException(e);
-        }
-        try {
             pstmt.setString(1, username);
-        } catch (SQLException e) {
-            System.out.println("用户名问题");
-            response.getWriter().print("105");
-            throw new RuntimeException(e);
-        }
-        try {
             pstmt.setString(2, userpassword);
         } catch (SQLException e) {
-            System.out.println("密码问题");
             response.getWriter().print("105");
-            throw new RuntimeException(e);
+            return;
         }
+
         int checkOK=0;
         try {
             ResultSet rs = pstmt.executeQuery();
@@ -105,8 +93,8 @@ public class LoginServlet extends HttpServlet {
             }
 
         } catch (SQLException e) {
-
-            throw new RuntimeException(e);
+            response.getWriter().print("105");
+            return;
         }
         if(checkOK==0){
             return;

@@ -50,7 +50,10 @@ public class TransferWord extends HttpServlet {
         username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
         String bookname = request.getParameter("bookname");
         int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是已选未背的，2是不认识的，3是未背+不认识的
-        long userId = ChooseWords.getUserId(username);
+        long userId = ChooseWords.getUserId(username,response);
+        if (userId==0){
+            return;
+        }
 
 
         ///////////////////选单词
@@ -77,7 +80,7 @@ public class TransferWord extends HttpServlet {
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("获取未选单词失败");
-            throw new RuntimeException(e);
+            return;
         }
 
         if (nonNum == 0) {
@@ -106,14 +109,14 @@ public class TransferWord extends HttpServlet {
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("单词数据获取失败!");
-            throw new RuntimeException(e);
+            return;
         }
         for (int i = 0; i < randomNonNum; i++) {
             try {
                 rs2.next();
             } catch (SQLException e) {
                 response.getWriter().print("108");
-                throw new RuntimeException(e);
+                return;
             }
         }
         int onewordId;
@@ -121,7 +124,7 @@ public class TransferWord extends HttpServlet {
             onewordId = rs2.getInt(1);
         } catch (SQLException e) {
             response.getWriter().print("108");
-            throw new RuntimeException(e);
+            return;
         }
         Word oneNewWord = ChooseWords.getNewWord(onewordId, bookname);
         if (oneNewWord == null) {
@@ -137,12 +140,14 @@ public class TransferWord extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json; charset=utf-8");
         PrintWriter writer = response.getWriter();
-        Map<String, String> map = new HashMap<>();
-        map.put("wordId", String.valueOf(oneNewWord.wordId));
-        map.put("word", oneNewWord.word);
-        map.put("wordTranslation", oneNewWord.wordTranslation);
-        map.put("wordPhonetic", oneNewWord.wordPhonetic);
-        writer.write(map.toString());
+//        Map<String, String> map = new HashMap<>();
+//        map.put("wordId", String.valueOf(oneNewWord.wordId));
+//        map.put("word", oneNewWord.word);
+//        map.put("wordTranslation", oneNewWord.wordTranslation);
+//        map.put("wordPhonetic", oneNewWord.wordPhonetic);
+//        writer.write(map.toString());
+        writer.write("{\"wordId\":\""+oneNewWord.wordId+"\",\"word\":\""+oneNewWord.word+"\",\"wordTranslation\":\""+oneNewWord.wordTranslation+"\",\"wordPhonetic\":\""+oneNewWord.wordPhonetic+"\"}");
+
 
     }
 

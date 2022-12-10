@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+import java.util.Objects;
+
 /**
  * @Description: 注册
  * @Author: Bug
@@ -49,7 +51,7 @@ public class RegisterServlet extends HttpServlet {
 //        String sex = request.getParameter("sex");
 //        String phone = request.ge
 //        tParameter("phone");
-        if (username == null || userpassword == null) {
+        if (Objects.equals(username, "") || Objects.equals(userpassword, "")) {
             System.out.println("用户名和密码不能为空！");
             response.getWriter().print("104");
             return;
@@ -63,21 +65,16 @@ public class RegisterServlet extends HttpServlet {
         long userId = 0;
         String userIdSql = "select max(userId) from user_table";
         PreparedStatement pstmt1;
+
         try {
             pstmt1 = conn.prepareStatement(userIdSql);
-        } catch (SQLException e) {
-            response.getWriter().print("105");
-            System.out.println("获取Id信息连接失败");
-            throw new RuntimeException(e);
-        }
-        try {
             ResultSet rs1 = pstmt1.executeQuery();
             rs1.next();
             userId = rs1.getLong(1) + 1;
 
         } catch (SQLException e) {
             response.getWriter().print("105");
-            throw new RuntimeException(e);
+            return;
         }
         //////////////用户名
         String userNmaeSql = "select * from user_table where username=? ";
@@ -89,17 +86,11 @@ public class RegisterServlet extends HttpServlet {
         }
         try {
             pstmt2 = conn.prepareStatement(userNmaeSql);
-        } catch (SQLException e) {
-            System.out.println("获取用户名信息连接失败");
-            response.getWriter().print("105");
-            throw new RuntimeException(e);
-        }
-        try {
             pstmt2.setString(1, username);
         } catch (SQLException e) {
             System.out.println("用户名问题");
             response.getWriter().print("105");
-            throw new RuntimeException(e);
+            return;
         }
         try {
             ResultSet rs2 = pstmt2.executeQuery();
@@ -111,7 +102,7 @@ public class RegisterServlet extends HttpServlet {
 
         } catch (SQLException e) {
             response.getWriter().print("105");
-            throw new RuntimeException(e);
+            return;
         }
 
 
@@ -134,31 +125,12 @@ public class RegisterServlet extends HttpServlet {
         PreparedStatement pstmt3;
         try {
             pstmt3 = conn.prepareStatement(insertSql);
-        } catch (SQLException e) {
-            System.out.println("获取数据库信息连接失败");
-            response.getWriter().print("105");
-            throw new RuntimeException(e);
-        }
-        try {
             pstmt3.setLong(1, userId);
-        } catch (SQLException e) {
-            System.out.println("Id问题");
-            response.getWriter().print("105");
-            throw new RuntimeException(e);
-        }
-        try {
             pstmt3.setString(2, username);
-        } catch (SQLException e) {
-            System.out.println("用户名问题");
-            response.getWriter().print("105");
-            throw new RuntimeException(e);
-        }
-        try {
             pstmt3.setString(3, userpassword);
         } catch (SQLException e) {
-            System.out.println("密码问题");
             response.getWriter().print("105");
-            throw new RuntimeException(e);
+            return;
         }
         int checkOK = 0;
         try {
@@ -171,7 +143,7 @@ public class RegisterServlet extends HttpServlet {
         } catch (SQLException e) {
             System.out.println("失败！");
             response.getWriter().print("105");
-            throw new RuntimeException(e);
+            return;
         }
 
         if (checkOK == 0) {
@@ -188,12 +160,6 @@ public class RegisterServlet extends HttpServlet {
         try {
             pstmt4 = conn.prepareStatement(CET4numSql);
             pstmt5 = conn.prepareStatement(CET6numSql);
-        } catch (SQLException e) {
-            System.out.println("获取单词连接失败");
-            response.getWriter().print("108");
-            throw new RuntimeException(e);
-        }
-        try {
             ResultSet rs4 = pstmt4.executeQuery();
             ResultSet rs5 = pstmt5.executeQuery();
             rs4.next();
@@ -202,7 +168,7 @@ public class RegisterServlet extends HttpServlet {
             CET6num = rs5.getInt(1);
         } catch (SQLException e) {
             response.getWriter().print("108");
-            throw new RuntimeException(e);
+            return;
         }
         checkOK = 0;
 
@@ -238,16 +204,10 @@ public class RegisterServlet extends HttpServlet {
         String createCET6Sql = "create table CET6_" + userId + " (wordId int primary key,state int not null)";
         PreparedStatement pstmt01;
         PreparedStatement pstmt02;
+        int checkOK2 = 0;
         try {
             pstmt01 = conn2.prepareStatement(createCET4Sql);
             pstmt02 = conn2.prepareStatement(createCET6Sql);
-        } catch (SQLException e) {
-            response.getWriter().print("108");
-            System.out.println("获取数据库信息连接失败");
-            throw new RuntimeException(e);
-        }
-        int checkOK2 = 0;
-        try {
             int rs01 = pstmt01.executeUpdate();
             int rs02 = pstmt02.executeUpdate();
             if (rs01 == 0 && rs02 == 0) {
@@ -258,7 +218,7 @@ public class RegisterServlet extends HttpServlet {
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("创建初始化单词表失败！");
-            throw new RuntimeException(e);
+            return;
         }
         if (checkOK2 == 0) {
             return;
@@ -273,7 +233,7 @@ public class RegisterServlet extends HttpServlet {
             } catch (SQLException e) {
                 response.getWriter().print("108");
                 System.out.println("4级单词初始失败");
-                throw new RuntimeException(e);
+                return;
             }
         }
         for (int i = 1; i <= CET6num; i++) {
@@ -284,7 +244,7 @@ public class RegisterServlet extends HttpServlet {
             } catch (SQLException e) {
                 response.getWriter().print("108");
                 System.out.println("6级单词初始失败");
-                throw new RuntimeException(e);
+                return;
             }
         }
         int count1 = 0;
@@ -299,7 +259,7 @@ public class RegisterServlet extends HttpServlet {
             count1 = rs01.getInt(1);
             count2 = rs02.getInt(1);
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return;
         }
         if (count1 == CET4num && count2 == CET6num) {
             checkOK = 1;

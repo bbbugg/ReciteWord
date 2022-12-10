@@ -45,19 +45,14 @@ public class CheckUserServlet extends HttpServlet {
             return;
         }
 
-        String LoginSql = "select * from user_table ";
+        String allUserSql = "select * from user_table ";
 
         PreparedStatement pstmt;
-        try {
-            pstmt = conn.prepareStatement(LoginSql);
-        } catch (SQLException e) {
-            response.getWriter().print("105");
-            System.out.println("获取登录信息连接失败");
-            throw new RuntimeException(e);
-        }
+
         int checkOK = 0;
         ResultSet rs;
         try {
+            pstmt = conn.prepareStatement(allUserSql);
             rs = pstmt.executeQuery();
 //            response.setCharacterEncoding("gbk");
 //            PrintWriter writer = response.getWriter();
@@ -75,7 +70,7 @@ public class CheckUserServlet extends HttpServlet {
             while (rs.next()) {
                 long id = rs.getLong(1);
                 String username = rs.getString(2);
-                String password = rs.getString(3);
+                String userpassword = rs.getString(3);
                 String name = rs.getString(4);
                 String sex = rs.getString(5);
                 String age = rs.getString(6);
@@ -85,7 +80,7 @@ public class CheckUserServlet extends HttpServlet {
                 response.getWriter().print("<tr align=\"center\">\n" +
                         "        <td>" + id + "</td>\n" +
                         "        <td>" + username + "</td>\n" +
-                        "        <td>" + password + "</td>\n" +
+                        "        <td>" + userpassword + "</td>\n" +
                         "        <td>" + name + "</td>\n" +
                         "        <td>" + sex + "</td>\n" +
                         "        <td>" + age + "</td>\n" +
@@ -97,7 +92,7 @@ public class CheckUserServlet extends HttpServlet {
             System.out.println("输出完成!");
         } catch (SQLException e) {
             response.getWriter().print("105");
-            throw new RuntimeException(e);
+            return;
         }
 
     }

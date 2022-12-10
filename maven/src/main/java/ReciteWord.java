@@ -52,7 +52,10 @@ public class ReciteWord extends HttpServlet {
         String bookname = request.getParameter("bookname");
         int wordState = Integer.parseInt(request.getParameter("wordstate"));/////////2是认识，3是不认识
 
-        long userId = ChooseWords.getUserId(username);
+        long userId = ChooseWords.getUserId(username,response);
+        if(userId==0){
+            return;
+        }
 
         //////////更改
 
@@ -72,7 +75,7 @@ public class ReciteWord extends HttpServlet {
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("单词数据上传失败!");
-            throw new RuntimeException(e);
+            return;
         }
 
     }

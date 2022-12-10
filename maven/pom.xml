@@ -17,9 +17,26 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
+      <version>4.0.1</version>
       <scope>provided</scope>
     </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.progsbase.libraries</groupId>-->
+<!--      <artifactId>JSON</artifactId>-->
+<!--      <version>0.4.0</version>-->
+<!--      <scope>import</scope>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>org.json</groupId>-->
+<!--      <artifactId>json</artifactId>-->
+<!--      <version>20220924</version>-->
+<!--    </dependency>-->
+<!--    <dependency>-->
+<!--      <groupId>com.google.code.gson</groupId>-->
+<!--      <artifactId>gson</artifactId>-->
+<!--      <version>2.10</version>-->
+<!--      <scope>import</scope>-->
+<!--    </dependency>-->
   </dependencies>
   <build>
     <finalName>Maven</finalName>

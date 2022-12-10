@@ -2,7 +2,7 @@ public class User {
     private static long nextId=1;
     private final long userId;
     private String username;
-    private String password;
+    private String userpassword;
     private String name;
     private String phone;
     private int age;
@@ -14,7 +14,7 @@ public class User {
     }
     public User(String username, String password, String name, String phone, int age, int sex) {
         this.username=username;
-        this.password=password;
+        this.userpassword =password;
         this.name=name;
         this.phone=phone;
         this.age=age;
@@ -22,7 +22,7 @@ public class User {
     }
     public void ChangeUser(String username, String password, String name, String phone, int age, int sex){
         this.username=username;
-        this.password=password;
+        this.userpassword =password;
         this.name=name;
         this.phone=phone;
         this.age=age;

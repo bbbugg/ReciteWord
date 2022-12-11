@@ -127,8 +127,8 @@ public class AlterUser extends HttpServlet {
                 response.getWriter().print("112");
                 return;
             }
-            if (phone.length() > 11) {
-                System.out.println("电话号码过长！");
+            if (phone.length() != 11&&phone.length() != 7) {
+                System.out.println("电话号码长度只能为7或11！");
                 response.getWriter().print("112");
                 return;
             }

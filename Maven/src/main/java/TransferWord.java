@@ -19,6 +19,8 @@ import java.util.Map;
 public class TransferWord extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("\nTransfer:"+ LoginServlet.getIpAddr(request));
+        LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
         String userName = "sa";
@@ -26,10 +28,10 @@ public class TransferWord extends HttpServlet {
 
         try {
             Class.forName(driverName);
-            System.out.println("\n加载驱动成功！");
+            System.out.println("加载驱动成功！");
         } catch (Exception e) {
             response.getWriter().print("101");
-            System.out.println("\n加载驱动失败！");
+            System.out.println("加载驱动失败！");
             return;
         }
         Connection conn = null;
@@ -37,7 +39,7 @@ public class TransferWord extends HttpServlet {
             conn = DriverManager.getConnection(dbURL, userName, userPwd);
             System.out.println("连接数据库成功！");
         } catch (Exception e) {
-            response.getWriter().print("101");
+            response.getWriter().print("102");
             System.out.println("数据库连接失败！");
             return;
         }
@@ -45,7 +47,8 @@ public class TransferWord extends HttpServlet {
         String username = request.getParameter("username");
         username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
         String bookname = request.getParameter("bookname");
-        int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是已选未背的，2是不认识的，3是未背+不认识的
+        int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是未选的，2是不认识的，3是未选+不认识的
+//        int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是已选未背的，2是不认识的，3是未背+不认识的
         long userId = ChooseWords.getUserId(username,response);
         if (userId==0){
             return;
@@ -53,9 +56,9 @@ public class TransferWord extends HttpServlet {
 
 
         ///////////////////选单词
-        String nonReciteNumSql = "select count(*) from " + bookname + "_" + userId + " where state=1 ";
+        String nonReciteNumSql = "select count(*) from " + bookname + "_" + userId + " where state=0 ";
         String nonKnownNumSql = "select count(*) from " + bookname + "_" + userId + " where state=3 ";
-        String nonReciteNonKnownNumSql = "select count(*) from " + bookname + "_" + userId + " where state=1 or state=3";
+        String nonReciteNonKnownNumSql = "select count(*) from " + bookname + "_" + userId + " where state=0 or state=3";
 
         int nonNum = 0;
 
@@ -88,9 +91,9 @@ public class TransferWord extends HttpServlet {
         int randomNonNum = (int) (Math.random() * (nonNum) + 1);
         ResultSet rs2;
         PreparedStatement pstmt2;
-        String nonReciteSql = "select * from " + bookname + "_" + userId + " where state=1 ";
-        String nonKnownSql = "select * from " + bookname + "_" + userId + " where state=3 ";
-        String nonReciteNonKnownSql = "select * from " + bookname + "_" + userId + " where state=1 or state=3";
+        String nonReciteSql = "select * from " + bookname + "_" + userId + " where state=0 ";
+        String nonKnownSql = "select * from " + bookname + "_" + userId + " where state=0 ";
+        String nonReciteNonKnownSql = "select * from " + bookname + "_" + userId + " where state=0 or state=3";
 
         try {
             if (reciteState == 1) {

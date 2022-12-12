@@ -20,19 +20,21 @@ public class AlterUser extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        System.out.println("\nAlter:"+ LoginServlet.getIpAddr(request));
+        LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
         String userName = "sa";
         String userPwd = "12345";
         try {
             Class.forName(driverName);
-            System.out.println("\n加载驱动成功！");
+            System.out.println("加载驱动成功！");
         } catch (Exception e) {
             //解决将数据传递给网页时的中文显示问题
             response.setContentType("text/html;charset=UTF-8");
             //创建的网页代码显示
             response.getWriter().print("101");
-            System.out.println("\n加载驱动失败！");
+            System.out.println("加载驱动失败！");
             return;
         }
         Connection conn = null;

@@ -24,7 +24,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
+        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
         String userName = "sa";
         String userPwd = "12345";
         try {
@@ -35,8 +35,8 @@ public class LoginServlet extends HttpServlet {
             response.setContentType("text/html;charset=UTF-8");
             //创建的网页代码显示
             response.getWriter().print("101");
-            e.printStackTrace();
-            System.out.println("加载驱动失败！");
+            System.out.println("\n加载驱动失败！");
+            return;
         }
         Connection conn = null;
         try {
@@ -46,12 +46,7 @@ public class LoginServlet extends HttpServlet {
             //解决将数据传递给网页时的中文显示问题
             //创建的网页代码显示
             response.getWriter().print("102");
-            e.printStackTrace();
-            conn = null;
             System.out.println("数据库连接失败！");
-        }
-        if (conn == null) {
-            response.getWriter().print("101.5");
             return;
         }
         String username = request.getParameter("username");

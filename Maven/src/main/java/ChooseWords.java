@@ -19,7 +19,7 @@ public class ChooseWords extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word";
+        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
         String userName = "sa";
         String userPwd = "12345";
 
@@ -28,8 +28,8 @@ public class ChooseWords extends HttpServlet {
             System.out.println("\n加载驱动成功！");
         } catch (Exception e) {
             response.getWriter().print("101");
-            e.printStackTrace();
-            System.out.println("加载驱动失败！");
+            System.out.println("\n加载驱动失败！");
+            return;
         }
         Connection conn = null;
         try {
@@ -37,12 +37,7 @@ public class ChooseWords extends HttpServlet {
             System.out.println("连接数据库成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
-            e.printStackTrace();
-            conn = null;
             System.out.println("SQL Server连接失败！");
-        }
-        if (conn == null) {
-            response.getWriter().print("101.5");
             return;
         }
 
@@ -184,47 +179,36 @@ public class ChooseWords extends HttpServlet {
 
     static Word getNewWord(int onewordId, String bookname) {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
+        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
         String userName = "sa";
         String userPwd = "12345";
 
         try {
             Class.forName(driverName);
-//            System.out.println("加载驱动2成功！");
         } catch (Exception e) {
-            e.printStackTrace();
-//            System.out.println("加载驱动2失败！");
+            return null;
         }
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(dbURL, userName, userPwd);
-//            System.out.println("连接数据库2成功！");
         } catch (Exception e) {
-            e.printStackTrace();
-            conn = null;
-//            System.out.println("连接数据库2失败！");
-        }
-        if (conn == null) {
             return null;
         }
+
         String chooseSql = "select * from " + bookname + "_word where wordId=" + onewordId;
         PreparedStatement pstmt;
         ResultSet rs;
+        Word oneNewWord;
         try {
             pstmt = conn.prepareStatement(chooseSql);
             rs = pstmt.executeQuery();
             rs.next();
-        } catch (SQLException e) {
-            System.out.println("单词数据获取失败!");
-            return null;
-        }
-        Word oneNewWord;
-        try {
             String oneword = rs.getString(2);
             String onewordTranslation = rs.getString(3);
             String onewordPhonetic = rs.getString(4);
             oneNewWord = new Word(onewordId, oneword, onewordTranslation, onewordPhonetic);
         } catch (SQLException e) {
+            System.out.println("单词数据获取失败!");
             return null;
         }
         return oneNewWord;
@@ -232,7 +216,7 @@ public class ChooseWords extends HttpServlet {
 
     protected static long getUserId(String username,HttpServletResponse response) throws IOException {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
+        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
         String userName = "sa";
         String userPwd = "12345";
 
@@ -250,27 +234,17 @@ public class ChooseWords extends HttpServlet {
             System.out.println("连接数据库2成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
-            conn = null;
             System.out.println("连接数据库2失败！");
-        }
-        if (conn == null) {
             return 0;
         }
         String getUserIdSql = "select userId from user_table where username = ?";
 
         PreparedStatement pstmt;
-        try {
-            pstmt = conn.prepareStatement(getUserIdSql);
-            pstmt.setString(1, username);
-        } catch (SQLException e) {
-            System.out.println("获取用户信息连接失败");
-            response.getWriter().print("105");
-            return 0;
-        }
-        int checkOK = 0;
         ResultSet rs;
         long userId;
         try {
+            pstmt = conn.prepareStatement(getUserIdSql);
+            pstmt.setString(1, username);
             rs = pstmt.executeQuery();
             rs.next();
             userId = rs.getLong(1);

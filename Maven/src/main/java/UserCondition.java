@@ -20,7 +20,7 @@ public class UserCondition extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word";
+        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
         String userName = "sa";
         String userPwd = "12345";
         try {
@@ -28,8 +28,8 @@ public class UserCondition extends HttpServlet {
             System.out.println("\n加载驱动成功！");
         } catch (Exception e) {
             response.getWriter().print("101");
-            e.printStackTrace();
-            System.out.println("加载驱动失败！");
+            System.out.println("\n加载驱动失败！");
+            return;
         }
         Connection conn = null;
         try {
@@ -38,13 +38,10 @@ public class UserCondition extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("102");
             e.printStackTrace();
-            conn = null;
-            System.out.println("SQL Server连接失败！");
-        }
-        if (conn == null) {
-            response.getWriter().print("101.5");
+            System.out.println("数据库连接失败！");
             return;
         }
+
         String username = request.getParameter("username");
         username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 
@@ -88,27 +85,27 @@ public class UserCondition extends HttpServlet {
 
         ////////////查询一共多少单词
         String driverName2 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL2 = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
+        String dbURL2 = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
         String userName2 = "sa";
         String userPwd2 = "12345";
 
         try {
             Class.forName(driverName2);
-//            System.out.println("加载驱动2成功！");
+            System.out.println("加载驱动2成功！");
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().print("101");
-//            System.out.println("加载驱动2失败！");
+            System.out.println("加载驱动2失败！");
         }
         Connection conn2 = null;
         try {
             conn2 = DriverManager.getConnection(dbURL2, userName2, userPwd2);
-//            System.out.println("连接数据库2成功！");
+            System.out.println("连接数据库2成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
             e.printStackTrace();
             conn2 = null;
-//            System.out.println("数据库2连接失败！");
+            System.out.println("数据库2连接失败！");
         }
 
         int CET4num = 0;
@@ -144,12 +141,6 @@ public class UserCondition extends HttpServlet {
         PreparedStatement pstmt5;
         try {
             pstmt5 = conn2.prepareStatement(getUserInfoSql);
-        } catch (SQLException e) {
-            System.out.println("获取用户信息失败");
-            response.getWriter().print("105");
-            return;
-        }
-        try {
             ResultSet rs5 = pstmt5.executeQuery();
             rs5.next();
             userpassword=rs5.getString(3);

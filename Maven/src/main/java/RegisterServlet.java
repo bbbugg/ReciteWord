@@ -18,7 +18,7 @@ import java.util.Objects;
 public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word";
+        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
         String userName = "sa";
         String userPwd = "12345";
         try {
@@ -26,8 +26,8 @@ public class RegisterServlet extends HttpServlet {
             System.out.println("\n加载驱动成功！");
         } catch (Exception e) {
             response.getWriter().print("101");
-            e.printStackTrace();
-            System.out.println("加载驱动失败！");
+            System.out.println("\n加载驱动失败！");
+            return;
         }
         Connection conn = null;
         try {
@@ -35,14 +35,10 @@ public class RegisterServlet extends HttpServlet {
             System.out.println("连接数据库成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
-            e.printStackTrace();
-            conn = null;
             System.out.println("数据库连接失败！");
-        }
-        if (conn == null) {
-            response.getWriter().print("101.5");
             return;
         }
+
 
         String username = request.getParameter("username");
         String userpassword = request.getParameter("userpassword");//服务器通过这种方式接收客户端对应键值对的值
@@ -174,30 +170,25 @@ public class RegisterServlet extends HttpServlet {
 
         ///////////创建单词表
         String driverName2 = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-        String dbURL2 = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word";
+        String dbURL2 = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
         String userName2 = "sa";
         String userPwd2 = "12345";
 
         try {
             Class.forName(driverName2);
-//            System.out.println("加载驱动2成功！");
+            System.out.println("加载驱动2成功！");
         } catch (Exception e) {
-            e.printStackTrace();
             response.getWriter().print("101");
-//            System.out.println("加载驱动2失败！");
+            System.out.println("加载驱动2失败！");
+            return;
         }
         Connection conn2 = null;
         try {
             conn2 = DriverManager.getConnection(dbURL2, userName2, userPwd2);
-//            System.out.println("连接数据库2成功！");
+            System.out.println("连接数据库2成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
-            e.printStackTrace();
-            conn2 = null;
-//            System.out.println("数据库2连接失败！");
-        }
-        if (conn2 == null) {
-            response.getWriter().print("101.5");
+            System.out.println("数据库2连接失败！");
             return;
         }
         String createCET4Sql = "create table CET4_" + userId + " (wordId int primary key,state int not null)";

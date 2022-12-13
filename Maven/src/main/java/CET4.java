@@ -36,7 +36,6 @@ public class CET4 extends HttpServlet {
             System.out.println("连接数据库成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
-            e.printStackTrace();
             System.out.println("数据库连接失败！");
             return;
         }

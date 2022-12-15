@@ -18,9 +18,8 @@ import java.util.Objects;
 @WebServlet(urlPatterns = "/Alter")
 public class AlterUser extends HttpServlet {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        System.out.println("\nAlter:"+ LoginServlet.getIpAddr(request));
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("\nAlter:" + LoginServlet.getIpAddr(request));
         LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
@@ -56,7 +55,7 @@ public class AlterUser extends HttpServlet {
         String ageStr = request.getParameter("age");//服务器通过这种方式接收客户端对应键值对的值
         String phone = request.getParameter("phone");//服务器通过这种方式接收客户端对应键值对的值
 
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 
         //////////////////判断是否合法
         String getUserInfoSql = "select * from user_table where username=?";
@@ -88,9 +87,13 @@ public class AlterUser extends HttpServlet {
                 response.getWriter().print("107");
                 return;
             }
+        } else {
+            System.out.println("密码不能为空!");
+            response.getWriter().print("107");
+            return;
         }
         if (!Objects.equals(name, "")) {
-            name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
+//            name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
             if (name.length() > 10) {
                 System.out.println("姓名长度小于等于10！");
                 response.getWriter().print("110");
@@ -98,7 +101,7 @@ public class AlterUser extends HttpServlet {
             }
         }
         if (!Objects.equals(sex, "")) {
-            sex = new String(sex.getBytes("ISO-8859-1"), "UTF-8");
+//            sex = new String(sex.getBytes("ISO-8859-1"), "UTF-8");
             if (!Objects.equals(sex, "男") && !Objects.equals(sex, "女")) {
                 System.out.println("性别只能是\"男\"或\"女\"!");
                 response.getWriter().print("113");
@@ -125,7 +128,7 @@ public class AlterUser extends HttpServlet {
                 response.getWriter().print("112");
                 return;
             }
-            if (phone.length() != 11&&phone.length() != 7) {
+            if (phone.length() != 11 && phone.length() != 7) {
                 System.out.println("电话号码长度只能为7或11！");
                 response.getWriter().print("112");
                 return;
@@ -150,7 +153,7 @@ public class AlterUser extends HttpServlet {
                 return;
             }
         }
-        if (!Objects.equals(name, "")) {
+        if (!Objects.equals(name, "") || Objects.equals(name, "")) {
             String nameAlterSql = "update user_table set name =? where username=?";
             PreparedStatement pstmt3;
             int rs;
@@ -166,7 +169,7 @@ public class AlterUser extends HttpServlet {
                 return;
             }
         }
-        if (!Objects.equals(sex, "")) {
+        if (!Objects.equals(sex, "") || Objects.equals(sex, "")) {
             String sexAlterSql = "update user_table set sex =? where username=?";
             PreparedStatement pstmt4;
             int rs;
@@ -182,7 +185,7 @@ public class AlterUser extends HttpServlet {
                 return;
             }
         }
-        if (!Objects.equals(ageStr, "")) {
+        if (!Objects.equals(ageStr, "") || Objects.equals(ageStr, "")) {
             String ageAlterSql = "update user_table set age =? where username=?";
             PreparedStatement pstmt5;
             int rs;
@@ -198,7 +201,7 @@ public class AlterUser extends HttpServlet {
                 return;
             }
         }
-        if (!Objects.equals(phone, "")) {
+        if (!Objects.equals(phone, "") || Objects.equals(phone, "")) {
             String phoneAlterSql = "update user_table set phone =? where username=?";
             PreparedStatement pstmt6;
             int rs;
@@ -231,8 +234,7 @@ public class AlterUser extends HttpServlet {
         return str.matches(regex);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }
 }

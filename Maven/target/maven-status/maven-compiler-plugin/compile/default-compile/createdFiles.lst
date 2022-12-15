@@ -1,10 +1,12 @@
+LoginServlet.class
+RegisterServlet.class
+CET6.class
+UserCondition.class
+Word.class
 CheckUserServlet.class
 TransferWord.class
-LoginServlet.class
 User.class
+CET4.class
 ChooseWords.class
-RegisterServlet.class
-UserCondition.class
 AlterUser.class
 ReciteWord.class
-Word.class

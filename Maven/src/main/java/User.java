@@ -5,14 +5,14 @@ public class User {
     private String userpassword;
     private String name;
     private String phone;
-    private int age;
-    private int sex;
+    private String age;
+    private String sex;
 
     {
         userId=nextId;
         nextId++;
     }
-    public User(String username, String password, String name, String phone, int age, int sex) {
+    public User(String username, String password, String name, String phone, String age, String sex) {
         this.username=username;
         this.userpassword =password;
         this.name=name;
@@ -20,7 +20,7 @@ public class User {
         this.age=age;
         this.sex=sex;
     }
-    public void ChangeUser(String username, String password, String name, String phone, int age, int sex){
+    public void ChangeUser(String username, String password, String name, String phone, String age, String sex){
         this.username=username;
         this.userpassword =password;
         this.name=name;

@@ -52,7 +52,7 @@ public class AlterUser extends HttpServlet {
         String userpassword = request.getParameter("userpassword");//服务器通过这种方式接收客户端对应键值对的值
         String name = request.getParameter("name");//服务器通过这种方式接收客户端对应键值对的值
         String sex = request.getParameter("sex");//服务器通过这种方式接收客户端对应键值对的值
-        String ageStr = request.getParameter("age");//服务器通过这种方式接收客户端对应键值对的值
+        String age = request.getParameter("age");//服务器通过这种方式接收客户端对应键值对的值
         String phone = request.getParameter("phone");//服务器通过这种方式接收客户端对应键值对的值
 
 //        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
@@ -108,19 +108,17 @@ public class AlterUser extends HttpServlet {
                 return;
             }
         }
-        int age = 0;
-        if (!Objects.equals(ageStr, "")) {
-            if (!isDigit(ageStr)) {
+        if (!Objects.equals(age, "")) {
+            if (!isDigit(age)) {
                 System.out.println("年龄只能由数字构成！");
                 response.getWriter().print("111");
                 return;
             }
-            if (ageStr.length() > 3) {
+            if (age.length() > 3) {
                 System.out.println("年龄过大！");
                 response.getWriter().print("111");
                 return;
             }
-            age = Integer.parseInt(ageStr);
         }
         if (!Objects.equals(phone, "")) {
             if (!isDigit(phone)) {
@@ -185,13 +183,13 @@ public class AlterUser extends HttpServlet {
                 return;
             }
         }
-        if (!Objects.equals(ageStr, "") || Objects.equals(ageStr, "")) {
+        if (!Objects.equals(age, "") || Objects.equals(age, "")) {
             String ageAlterSql = "update user_table set age =? where username=?";
             PreparedStatement pstmt5;
             int rs;
             try {
                 pstmt5 = conn.prepareStatement(ageAlterSql);
-                pstmt5.setInt(1, age);
+                pstmt5.setString(1, age);
                 pstmt5.setString(2, username);
                 rs = pstmt5.executeUpdate();
                 System.out.println("年龄修改成功!");
@@ -223,7 +221,7 @@ public class AlterUser extends HttpServlet {
         System.out.println("userpassword=" + userpassword);
         System.out.println("name=" + name);
         System.out.println("sex=" + sex);
-        System.out.println("age=" + ageStr);
+        System.out.println("age=" + age);
         System.out.println("phone=" + phone);
 
 

@@ -19,7 +19,8 @@ import java.util.Map;
 public class TransferWord extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("\nTransfer:"+ LoginServlet.getIpAddr(request));
+        System.out.println("\nTransfer:" + LoginServlet.getIpAddr(request));
+        LoginServlet.writeFile("\nTransfer:" + LoginServlet.getIpAddr(request) + "\n");
         LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
@@ -49,8 +50,8 @@ public class TransferWord extends HttpServlet {
         String bookname = request.getParameter("bookname");
         int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是未选的，2是不认识的，3是未选+不认识的
 //        int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是已选未背的，2是不认识的，3是未背+不认识的
-        long userId = ChooseWords.getUserId(username,response);
-        if (userId==0){
+        long userId = ChooseWords.getUserId(username, response);
+        if (userId == 0) {
             return;
         }
 
@@ -69,8 +70,7 @@ public class TransferWord extends HttpServlet {
                 pstmt1 = conn.prepareStatement(nonReciteNumSql);
             } else if (reciteState == 2) {
                 pstmt1 = conn.prepareStatement(nonKnownNumSql);
-            }
-            else{
+            } else {
                 pstmt1 = conn.prepareStatement(nonReciteNonKnownNumSql);
             }
             ResultSet rs1 = pstmt1.executeQuery();
@@ -79,12 +79,14 @@ public class TransferWord extends HttpServlet {
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("获取未选单词失败");
+            LoginServlet.writeFile("获取未选单词失败\n");
             return;
         }
 
         if (nonNum == 0) {
             response.getWriter().print("109");
-            System.out.println(username+"的"+bookname + "所选单词已背完!");
+            System.out.println(username + "的" + bookname + "所选单词已背完!");
+            LoginServlet.writeFile(username + "的" + bookname + "所选单词已背完!\n");
             return;
         }
 
@@ -100,14 +102,14 @@ public class TransferWord extends HttpServlet {
                 pstmt2 = conn.prepareStatement(nonReciteSql);
             } else if (reciteState == 2) {
                 pstmt2 = conn.prepareStatement(nonKnownSql);
-            }
-            else{
+            } else {
                 pstmt2 = conn.prepareStatement(nonReciteNonKnownSql);
             }
             rs2 = pstmt2.executeQuery();
         } catch (SQLException e) {
             response.getWriter().print("108");
             System.out.println("单词数据获取失败!");
+            LoginServlet.writeFile("单词数据获取失败!\n");
             return;
         }
         for (int i = 0; i < randomNonNum; i++) {
@@ -129,11 +131,13 @@ public class TransferWord extends HttpServlet {
         if (oneNewWord == null) {
             response.getWriter().print("108");
             System.out.println("传输新单词失败！");
+            LoginServlet.writeFile("传输新单词失败！\n");
             return;
         }
 
         System.out.println("新添的单词");
         System.out.println(oneNewWord.wordId + ":" + oneNewWord.word + " " + oneNewWord.wordTranslation + " " + oneNewWord.wordPhonetic);
+        LoginServlet.writeFile(oneNewWord.wordId + ":" + oneNewWord.word + " " + oneNewWord.wordTranslation + " " + oneNewWord.wordPhonetic + "\n");
 
 
         response.setCharacterEncoding("utf-8");
@@ -145,7 +149,7 @@ public class TransferWord extends HttpServlet {
 //        map.put("wordTranslation", oneNewWord.wordTranslation);
 //        map.put("wordPhonetic", oneNewWord.wordPhonetic);
 //        writer.write(map.toString());
-        writer.write("{\"wordId\":\""+oneNewWord.wordId+"\",\"word\":\""+oneNewWord.word+"\",\"wordTranslation\":\""+oneNewWord.wordTranslation+"\",\"wordPhonetic\":\""+oneNewWord.wordPhonetic+"\"}");
+        writer.write("{\"wordId\":\"" + oneNewWord.wordId + "\",\"word\":\"" + oneNewWord.word + "\",\"wordTranslation\":\"" + oneNewWord.wordTranslation + "\",\"wordPhonetic\":\"" + oneNewWord.wordPhonetic + "\"}");
 
 
     }

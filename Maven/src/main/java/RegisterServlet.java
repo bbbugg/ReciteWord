@@ -13,11 +13,12 @@ import java.util.Objects;
  * @Author: Bug
  * @Date: 17:03 2022/12/8
  */
-         
+
 @WebServlet(urlPatterns = "/Register")
 public class RegisterServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("\nRegister:"+ LoginServlet.getIpAddr(request));
+        System.out.println("\nRegister:" + LoginServlet.getIpAddr(request));
+        LoginServlet.writeFile("\nRegister:" + LoginServlet.getIpAddr(request) + "\n");
         LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
@@ -29,6 +30,7 @@ public class RegisterServlet extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("101");
             System.out.println("加载驱动失败！");
+            LoginServlet.writeFile("加载驱动失败！\n");
             return;
         }
         Connection conn = null;
@@ -38,6 +40,7 @@ public class RegisterServlet extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("102");
             System.out.println("数据库连接失败！");
+            LoginServlet.writeFile("数据库连接失败！\n");
             return;
         }
 
@@ -51,6 +54,7 @@ public class RegisterServlet extends HttpServlet {
 //        tParameter("phone");
         if (Objects.equals(username, "") || Objects.equals(userpassword, "")) {
             System.out.println("用户名和密码不能为空！");
+            LoginServlet.writeFile("用户名和密码不能为空！\n");
             response.getWriter().print("104");
             return;
         }
@@ -58,7 +62,9 @@ public class RegisterServlet extends HttpServlet {
         userpassword = new String(userpassword.getBytes("ISO-8859-1"), "UTF-8");
 //        sex = new String(sex.getBytes("ISO-8859-1"), "UTF-8");
         System.out.println("username=" + username);
+        LoginServlet.writeFile("username=" + username + "\n");
         System.out.println("userpassword=" + userpassword);
+        LoginServlet.writeFile("userpassword=" + userpassword + "\n");
         ///////////////userId
         long userId = 0;
         String userIdSql = "select max(userId) from user_table";
@@ -79,6 +85,7 @@ public class RegisterServlet extends HttpServlet {
         PreparedStatement pstmt2;
         if (username.length() > 11 || username.length() < 2) {
             System.out.println("用户名长度范围2~11");
+            LoginServlet.writeFile("用户名长度范围2~11\n");
             response.getWriter().print("106");
             return;
         }
@@ -94,6 +101,7 @@ public class RegisterServlet extends HttpServlet {
             ResultSet rs2 = pstmt2.executeQuery();
             if (rs2.next()) {
                 System.out.println("用户名重复！");
+                LoginServlet.writeFile("用户名重复！\n");
                 response.getWriter().print("106");
                 return;
             }
@@ -108,11 +116,13 @@ public class RegisterServlet extends HttpServlet {
 
         if (userpassword.length() < 6 || userpassword.length() > 20) {
             System.out.println("密码长度范围6~20！");
+            LoginServlet.writeFile("密码长度范围6~20！\n");
             response.getWriter().print("107");
             return;
         }
         if (!isLetterDigit(userpassword)) {
             System.out.println("密码仅能由大小写字母和数字组成！");
+            LoginServlet.writeFile("密码仅能由大小写字母和数字组成！\n");
             response.getWriter().print("107");
             return;
         }
@@ -140,6 +150,7 @@ public class RegisterServlet extends HttpServlet {
 
         } catch (SQLException e) {
             System.out.println("失败！");
+            LoginServlet.writeFile("失败！\n");
             response.getWriter().print("105");
             return;
         }
@@ -205,6 +216,7 @@ public class RegisterServlet extends HttpServlet {
             int rs02 = pstmt02.executeUpdate();
             if (rs01 == 0 && rs02 == 0) {
                 System.out.println("创建初始化单词表成功!");
+                LoginServlet.writeFile("创建初始化单词表成功!\n");
                 checkOK2 = 1;
             }
 
@@ -257,6 +269,7 @@ public class RegisterServlet extends HttpServlet {
         if (count1 == CET4num && count2 == CET6num) {
             checkOK = 1;
             System.out.println("初始化单词成功！");
+            LoginServlet.writeFile("初始化单词成功！\n");
         } else {
             response.getWriter().print("108");
             System.out.println("初始化单词失败！");
@@ -277,6 +290,7 @@ public class RegisterServlet extends HttpServlet {
 
         response.getWriter().print("200");
         System.out.println("注册成功" + ", 成为第" + userId + "位用户。");
+        LoginServlet.writeFile("注册成功" + ", 成为第" + userId + "位用户。\n");
 
     }
 

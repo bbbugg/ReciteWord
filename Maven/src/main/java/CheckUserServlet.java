@@ -18,7 +18,8 @@ import java.sql.*;
 public class CheckUserServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("\nCheckUser:"+ LoginServlet.getIpAddr(request));
+        System.out.println("\nCheckUser:" + LoginServlet.getIpAddr(request));
+        LoginServlet.writeFile("\nCheckUser:" + LoginServlet.getIpAddr(request) + "\n");
         LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
@@ -30,6 +31,7 @@ public class CheckUserServlet extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("101");
             System.out.println("加载驱动失败！");
+            LoginServlet.writeFile("加载驱动失败！\n");
             return;
         }
         Connection conn = null;
@@ -38,7 +40,8 @@ public class CheckUserServlet extends HttpServlet {
             System.out.println("连接数据库成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
-            System.out.println("SQL Server连接失败！");
+            System.out.println("数据库连接失败！");
+            LoginServlet.writeFile("数据库连接失败！\n");
             return;
         }
 
@@ -87,6 +90,7 @@ public class CheckUserServlet extends HttpServlet {
             response.getWriter().print("</table>");
 //            writer.close();//注意刷新和关闭缓存
             System.out.println("输出完成!");
+            LoginServlet.writeFile("输出完成!\n");
         } catch (SQLException e) {
             response.getWriter().print("105");
             return;

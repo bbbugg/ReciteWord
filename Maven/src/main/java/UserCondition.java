@@ -19,7 +19,8 @@ import java.util.Map;
 public class UserCondition extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("\nCondition:"+ LoginServlet.getIpAddr(request));
+        System.out.println("\nCondition:" + LoginServlet.getIpAddr(request));
+        LoginServlet.writeFile("\nCondition:" + LoginServlet.getIpAddr(request) + "\n");
         LoginServlet.getTime();
 //        String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
 //        String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
@@ -46,8 +47,8 @@ public class UserCondition extends HttpServlet {
         String username = request.getParameter("username");
         username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 
-        long userId = ChooseWords.getUserId(username,response);
-        if (userId==0){
+        long userId = ChooseWords.getUserId(username, response);
+        if (userId == 0) {
             return;
         }
 
@@ -96,6 +97,7 @@ public class UserCondition extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("101");
             System.out.println("加载驱动失败！");
+            LoginServlet.writeFile("加载驱动失败！\n");
             return;
         }
         Connection conn2 = null;
@@ -104,7 +106,7 @@ public class UserCondition extends HttpServlet {
             System.out.println("连接数据库成功！");
         } catch (Exception e) {
             response.getWriter().print("102");
-            System.out.println("数据库连接失败！");
+            LoginServlet.writeFile("数据库连接失败！\n");
             return;
         }
 //
@@ -135,19 +137,19 @@ public class UserCondition extends HttpServlet {
 //        }
         ///////////查询用户信息
 
-        String userpassword,age,phone,sex,name;
+        String userpassword, age, phone, sex, name;
 
-        String getUserInfoSql = "select * from user_table where userId="+userId;
+        String getUserInfoSql = "select * from user_table where userId=" + userId;
         PreparedStatement pstmt5;
         try {
             pstmt5 = conn2.prepareStatement(getUserInfoSql);
             ResultSet rs5 = pstmt5.executeQuery();
             rs5.next();
-            userpassword=rs5.getString(3);
-            name= rs5.getString(4);
-            sex= rs5.getString(5);
-            age= rs5.getString(6);
-            phone= rs5.getString(7);
+            userpassword = rs5.getString(3);
+            name = rs5.getString(4);
+            sex = rs5.getString(5);
+            age = rs5.getString(6);
+            phone = rs5.getString(7);
         } catch (SQLException e) {
             response.getWriter().print("105");
             return;
@@ -156,7 +158,8 @@ public class UserCondition extends HttpServlet {
 //
 //        if (CET4num == CET4UserNum[0] + CET4UserNum[1] + CET4UserNum[2] + CET4UserNum[3] && CET6num == CET6UserNum[0] + CET6UserNum[1] + CET6UserNum[2] + CET6UserNum[3]) {
 //            System.out.println("查询用户单词成功!\n用户:" + username + " 密码:"+userpassword+" 姓名:"+name+" 性别:"+sex+" 年龄:"+age+" 电话:"+phone+"\nCET4:未选" + CET4UserNum[0] + " 已选未背:" + CET4UserNum[1] + " 认识:" + CET4UserNum[2] + " 不认识:" + CET4UserNum[3] + "\nCET6:未选" + CET6UserNum[0] + " 已选未背:" + CET6UserNum[1] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
-            System.out.println("查询用户单词成功!\n用户:" + username + " 密码:"+userpassword+" 姓名:"+name+" 性别:"+sex+" 年龄:"+age+" 电话:"+phone);
+        System.out.println("查询用户单词成功!\n用户:" + username + " 密码:" + userpassword + " 姓名:" + name + " 性别:" + sex + " 年龄:" + age + " 电话:" + phone);
+        LoginServlet.writeFile("查询用户单词成功!\n用户:" + username + " 密码:" + userpassword + " 姓名:" + name + " 性别:" + sex + " 年龄:" + age + " 电话:" + phone + "\n");
 
 //            //解决将数据传递给网页时的中文显示问题
 //            response.setContentType("text/html;charset=UTF-8");
@@ -189,10 +192,9 @@ public class UserCondition extends HttpServlet {
 //                    "</table>");
 
 
-
-            response.setCharacterEncoding("utf-8");
-            response.setContentType("application/json; charset=utf-8");
-            PrintWriter writer = response.getWriter();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json; charset=utf-8");
+        PrintWriter writer = response.getWriter();
 //            Map<String, String> map = new HashMap<>();
 //            map.put("\"username\"", "\""+username+"\"");
 //            map.put("\"userpassword\"", "\""+userpassword+"\"");
@@ -210,7 +212,7 @@ public class UserCondition extends HttpServlet {
 //            map.put("\"CET6UnkonwnNum\"", "\""+String.valueOf(CET6UserNum[3])+"\"");
 //            writer.write(map.toString());
 //            writer.write("{\"username\":\""+username+"\",\"userpassword\":\""+userpassword+"\",\"name\":\""+name+"\",\"sex\":\""+sex+"\",\"age\":\""+age+"\",\"phone\":\""+phone+"\",\"CET4NonChooseNum\":\""+CET4UserNum[0]+"\",\"CET4NonReciteNum\":\""+CET4UserNum[1]+"\",\"CET4KonwnNum\":\""+CET4UserNum[2]+"\",\"CET4UnkonwnNum\":\""+CET4UserNum[3]+"\",\"CET6NonChooseNum\":\""+CET6UserNum[0]+"\",\"CET6NonReciteNum\":\""+CET6UserNum[1]+"\",\"CET6KonwnNum\":\""+CET6UserNum[2]+"\",\"CET6UnkonwnNum\":\""+CET6UserNum[3]+"\"}");
-            writer.write("{\"username\":\""+username+"\",\"userpassword\":\""+userpassword+"\",\"name\":\""+name+"\",\"sex\":\""+sex+"\",\"age\":\""+age+"\",\"phone\":\""+phone+"\"}");
+        writer.write("{\"username\":\"" + username + "\",\"userpassword\":\"" + userpassword + "\",\"name\":\"" + name + "\",\"sex\":\"" + sex + "\",\"age\":\"" + age + "\",\"phone\":\"" + phone + "\"}");
 
 
 //        } else {

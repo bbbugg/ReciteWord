@@ -4,6 +4,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
@@ -24,7 +26,8 @@ public class LoginServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("\nLogin:"+getIpAddr(request));
+        System.out.println("\nLogin:" + getIpAddr(request));
+        writeFile("\nLogin:" + getIpAddr(request) + "\n");
         getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=recite_word;encrypt=false";
@@ -39,6 +42,7 @@ public class LoginServlet extends HttpServlet {
             //创建的网页代码显示
             response.getWriter().print("101");
             System.out.println("加载驱动失败！");
+            writeFile("加载驱动失败！\n");
             return;
         }
         Connection conn = null;
@@ -50,12 +54,14 @@ public class LoginServlet extends HttpServlet {
             //创建的网页代码显示
             response.getWriter().print("102");
             System.out.println("数据库连接失败！");
+            writeFile("数据库连接失败！\n");
             return;
         }
         String username = request.getParameter("username");
         String userpassword = request.getParameter("userpassword");//服务器通过这种方式接收客户端对应键值对的值
         if (username == null || userpassword == null) {
             System.out.println("用户名和密码不能为空！");
+            writeFile("用户名和密码不能为空！\n");
             response.getWriter().print("104");
             return;
         }
@@ -63,7 +69,9 @@ public class LoginServlet extends HttpServlet {
         username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
         userpassword = new String(userpassword.getBytes("ISO-8859-1"), "UTF-8");
         System.out.println("username=" + username);
+        writeFile("username=" + username + "\n");
         System.out.println("userpassword=" + userpassword);
+        writeFile("userpassword=" + userpassword + "\n");
 
         String LoginSql = "select * from user_table where username=? and password= ?";
 
@@ -77,24 +85,26 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        int checkOK=0;
+        int checkOK = 0;
         try {
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                checkOK=1;
+                checkOK = 1;
                 System.out.println("登陆成功");
+                writeFile("登陆成功\n");
             } else {
                 //解决将数据传递给网页时的中文显示问题
                 //创建的网页代码显示
                 response.getWriter().print("103");
                 System.out.println("用户名或密码错误");
+                writeFile("用户名或密码错误\n");
             }
 
         } catch (SQLException e) {
             response.getWriter().print("105");
             return;
         }
-        if(checkOK==0){
+        if (checkOK == 0) {
             return;
         }
 
@@ -115,28 +125,43 @@ public class LoginServlet extends HttpServlet {
         //获取请求头"x-forwarded-for"对应的value
         String IpAddr = request.getHeader("x-forwarded-for");
         //如果获取的ip值为空
-        if(IpAddr == null || IpAddr.length() == 0 || "unknown".equalsIgnoreCase(IpAddr)) {
+        if (IpAddr == null || IpAddr.length() == 0 || "unknown".equalsIgnoreCase(IpAddr)) {
             //则获取请求头"Proxy-Client-IP"对应的value
             IpAddr = request.getHeader("Proxy-Client-IP");
         }
         //如果获取的ip值仍为空
-        if(IpAddr == null || IpAddr.length() == 0 || "unknown".equalsIgnoreCase(IpAddr)) {
+        if (IpAddr == null || IpAddr.length() == 0 || "unknown".equalsIgnoreCase(IpAddr)) {
             //则获取请求头"WL-Proxy-Client-IP"对应的value
             IpAddr = request.getHeader("WL-Proxy-Client-IP");
         }
         //如果以上方式获取的ip值都为空
-        if(IpAddr == null || IpAddr.length() == 0 || "unknown".equalsIgnoreCase(IpAddr)) {
+        if (IpAddr == null || IpAddr.length() == 0 || "unknown".equalsIgnoreCase(IpAddr)) {
             //则直接获取ip地址
             IpAddr = request.getRemoteAddr();
         }
         //返回ip地址
         return IpAddr;
     }
-    public static void getTime(){
+
+    public static void getTime() throws IOException {
         DateTimeFormatter fmTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         //当前时间
         LocalDateTime now = LocalDateTime.now();
-        System.out.println("当前时间:"+now.format(fmTime));
+        System.out.println("当前时间:" + now.format(fmTime));
+        writeFile("当前时间:" + now.format(fmTime) + "\n");
+    }
+
+    public static void writeFile(String content) throws IOException {
+        DateTimeFormatter fmTime = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        String path = "G:\\缓存\\JavaWeb\\控制台输出\\" + now.format(fmTime) + ".txt";
+
+
+        File file = new File(path);//文件路径
+        FileWriter fileWriter = new FileWriter(file, true);
+        fileWriter.write(content);//写入
+        fileWriter.flush();//刷新数据，不刷新写入不进去
+        fileWriter.close();//关闭流
     }
 }

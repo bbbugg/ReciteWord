@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
+
 /**
  * @Description: 标记单词
  * @Author: Bug
@@ -17,7 +18,8 @@ public class ReciteWord extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("\nRecite:"+ LoginServlet.getIpAddr(request));
+        System.out.println("\nRecite:" + LoginServlet.getIpAddr(request));
+        LoginServlet.writeFile("\nRecite:" + LoginServlet.getIpAddr(request) + "\n");
         LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
@@ -30,6 +32,7 @@ public class ReciteWord extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("101");
             System.out.println("加载驱动失败！");
+            LoginServlet.writeFile("加载驱动失败！\n");
             return;
         }
         Connection conn = null;
@@ -39,6 +42,7 @@ public class ReciteWord extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("102");
             System.out.println("数据库连接失败！");
+            LoginServlet.writeFile("数据库连接失败！\n");
             return;
         }
 
@@ -48,8 +52,8 @@ public class ReciteWord extends HttpServlet {
         String bookname = request.getParameter("bookname");
         int wordState = Integer.parseInt(request.getParameter("wordstate"));/////////2是认识，3是不认识
 
-        long userId = ChooseWords.getUserId(username,response);
-        if(userId==0){
+        long userId = ChooseWords.getUserId(username, response);
+        if (userId == 0) {
             return;
         }
 
@@ -67,10 +71,12 @@ public class ReciteWord extends HttpServlet {
             }
             rs = pstmt.executeUpdate();
             response.getWriter().print("200");
-            System.out.println("单词上传成功!");
+            System.out.println(username + "单词上传成功!");
+            LoginServlet.writeFile(username + "单词上传成功!\n");
         } catch (SQLException e) {
             response.getWriter().print("108");
-            System.out.println("单词数据上传失败!");
+            System.out.println(username + "单词数据上传失败!");
+            LoginServlet.writeFile(username + "单词数据上传失败!\n");
             return;
         }
 

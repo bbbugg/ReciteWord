@@ -16,7 +16,8 @@ import java.sql.*;
 @WebServlet(urlPatterns = "/CET6")
 public class CET6 extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("\nCET6:"+ LoginServlet.getIpAddr(request));
+        System.out.println("\nCET6:" + LoginServlet.getIpAddr(request));
+        LoginServlet.writeFile("\nCET6:" + LoginServlet.getIpAddr(request) + "\n");
         LoginServlet.getTime();
         String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
         String dbURL = "jdbc:sqlserver://localhost:1433;DatabaseName=user_word;encrypt=false";
@@ -28,6 +29,7 @@ public class CET6 extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("101");
             System.out.println("加载驱动失败！");
+            LoginServlet.writeFile("加载驱动失败！\n");
             return;
         }
         Connection conn = null;
@@ -37,6 +39,7 @@ public class CET6 extends HttpServlet {
         } catch (Exception e) {
             response.getWriter().print("102");
             System.out.println("数据库连接失败！");
+            LoginServlet.writeFile("数据库连接失败！\n");
             return;
         }
 
@@ -64,6 +67,7 @@ public class CET6 extends HttpServlet {
             } catch (SQLException e) {
                 response.getWriter().print("108");
                 System.out.println(username + "无数据!");
+                LoginServlet.writeFile(username + "无数据!\n");
                 return;
             }
         }
@@ -81,6 +85,7 @@ public class CET6 extends HttpServlet {
             e.printStackTrace();
             response.getWriter().print("101");
             System.out.println("加载驱动2失败！");
+            LoginServlet.writeFile("加载驱动2失败！\n");
         }
         Connection conn2 = null;
         try {
@@ -91,6 +96,7 @@ public class CET6 extends HttpServlet {
             e.printStackTrace();
             conn2 = null;
             System.out.println("数据库2连接失败！");
+            LoginServlet.writeFile("数据库2连接失败！\n");
         }
 
         int CET6num = 0;
@@ -109,6 +115,7 @@ public class CET6 extends HttpServlet {
 
         if (CET6num == CET6UserNum[0] + CET6UserNum[1] + CET6UserNum[2] + CET6UserNum[3]) {
             System.out.println("查询用户单词成功!\n用户:" + username + "\nCET6:未选" + CET6UserNum[0] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3]);
+            LoginServlet.writeFile("查询用户单词成功!\n用户:" + username + "\nCET6:未选" + CET6UserNum[0] + " 认识:" + CET6UserNum[2] + " 不认识:" + CET6UserNum[3] + "\n");
 
             response.setCharacterEncoding("utf-8");
             response.setContentType("application/json; charset=utf-8");

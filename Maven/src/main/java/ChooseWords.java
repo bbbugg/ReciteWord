@@ -76,8 +76,8 @@ public class ChooseWords extends HttpServlet {
         }
         if (nonChooseNum == 0) {
             response.getWriter().print("109");
-            System.out.println(bookname + "所有单词已选完!");
-            LoginServlet.writeFile(bookname + "所有单词已选完!\n");
+            System.out.println(username+"的"+bookname + "所有单词已选完!");
+            LoginServlet.writeFile(username+"的"+bookname + "所有单词已选完!\n");
             return;
         }
         ///////////////////选词
@@ -123,8 +123,8 @@ public class ChooseWords extends HttpServlet {
             Word oneNewWord = getNewWord(onewordId, bookname);
             if (oneNewWord == null) {
                 response.getWriter().print("108");
-                System.out.println("添加新单词失败！");
-                LoginServlet.writeFile("添加新单词失败！\n");
+                System.out.println(username+"添加新单词失败！");
+                LoginServlet.writeFile(username+"添加新单词失败！\n");
                 return;
             }
 
@@ -145,14 +145,14 @@ public class ChooseWords extends HttpServlet {
             }
             if (checkOK == 0) {
                 response.getWriter().print("108");
-                System.out.println("添加新单词失败！");
-                LoginServlet.writeFile("添加新单词失败！\n");
+                System.out.println(username+"添加新单词失败！");
+                LoginServlet.writeFile(username+"添加新单词失败！\n");
                 return;
             }
             nonChooseNum--;
         }
-        System.out.println("新添的单词");
-        LoginServlet.writeFile("新添的单词\n");
+        System.out.println(username+"新添的单词");
+        LoginServlet.writeFile(username+"新添的单词\n");
         printNewWord(newWord);
 //        response.setCharacterEncoding("gbk");
 //        PrintWriter writer = response.getWriter();

@@ -130,12 +130,13 @@ public class TransferWord extends HttpServlet {
         Word oneNewWord = ChooseWords.getNewWord(onewordId, bookname);
         if (oneNewWord == null) {
             response.getWriter().print("108");
-            System.out.println("传输新单词失败！");
-            LoginServlet.writeFile("传输新单词失败！\n");
+            System.out.println(username+"传输新单词失败！");
+            LoginServlet.writeFile(username+"传输新单词失败！\n");
             return;
         }
 
-        System.out.println("新添的单词");
+        System.out.println(username+"新添的单词");
+        LoginServlet.writeFile(username+"新添的单词\n");
         System.out.println(oneNewWord.wordId + ":" + oneNewWord.word + " " + oneNewWord.wordTranslation + " " + oneNewWord.wordPhonetic);
         LoginServlet.writeFile(oneNewWord.wordId + ":" + oneNewWord.word + " " + oneNewWord.wordTranslation + " " + oneNewWord.wordPhonetic + "\n");
 

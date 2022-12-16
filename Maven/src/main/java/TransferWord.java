@@ -94,7 +94,7 @@ public class TransferWord extends HttpServlet {
         ResultSet rs2;
         PreparedStatement pstmt2;
         String nonReciteSql = "select * from " + bookname + "_" + userId + " where state=0 ";
-        String nonKnownSql = "select * from " + bookname + "_" + userId + " where state=0 ";
+        String nonKnownSql = "select * from " + bookname + "_" + userId + " where state=3 ";
         String nonReciteNonKnownSql = "select * from " + bookname + "_" + userId + " where state=0 or state=3";
 
         try {

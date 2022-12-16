@@ -145,6 +145,7 @@ public class RegisterServlet extends HttpServlet {
             int rs2 = pstmt3.executeUpdate();
             if (rs2 == 1) {
                 System.out.println("OK!");
+                LoginServlet.writeFile("OK!\n");
                 checkOK = 1;
             }
 

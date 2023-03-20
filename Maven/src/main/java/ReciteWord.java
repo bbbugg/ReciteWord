@@ -47,7 +47,7 @@ public class ReciteWord extends HttpServlet {
         }
 
         String username = request.getParameter("username");
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
         int wordId = Integer.parseInt(request.getParameter("wordId"));
         String bookname = request.getParameter("bookname");
         int wordState = Integer.parseInt(request.getParameter("wordstate"));/////////2是认识，3是不认识

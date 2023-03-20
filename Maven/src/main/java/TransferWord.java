@@ -46,7 +46,7 @@ public class TransferWord extends HttpServlet {
         }
 
         String username = request.getParameter("username");
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
         String bookname = request.getParameter("bookname");
         int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是未选的，2是不认识的，3是未选+不认识的
 //        int reciteState = Integer.parseInt(request.getParameter("recitestate"));//1是已选未背的，2是不认识的，3是未背+不认识的

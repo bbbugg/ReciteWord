@@ -45,7 +45,7 @@ public class UserCondition extends HttpServlet {
 //        }
 
         String username = request.getParameter("username");
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 
         long userId = ChooseWords.getUserId(username, response);
         if (userId == 0) {

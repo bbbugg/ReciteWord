@@ -58,8 +58,8 @@ public class RegisterServlet extends HttpServlet {
             response.getWriter().print("104");
             return;
         }
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
-        userpassword = new String(userpassword.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        userpassword = new String(userpassword.getBytes("ISO-8859-1"), "UTF-8");
 //        sex = new String(sex.getBytes("ISO-8859-1"), "UTF-8");
         System.out.println("username=" + username);
         LoginServlet.writeFile("username=" + username + "\n");

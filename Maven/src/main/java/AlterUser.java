@@ -58,7 +58,7 @@ public class AlterUser extends HttpServlet {
         String age = request.getParameter("age");//服务器通过这种方式接收客户端对应键值对的值
         String phone = request.getParameter("phone");//服务器通过这种方式接收客户端对应键值对的值
 
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
 
         //////////////////判断是否合法
         String getUserInfoSql = "select * from user_table where username=?";
@@ -101,7 +101,7 @@ public class AlterUser extends HttpServlet {
             return;
         }
         if (!Objects.equals(name, "")) {
-            name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
+//            name = new String(name.getBytes("ISO-8859-1"), "UTF-8");
             if (name.length() > 10) {
                 System.out.println("姓名长度小于等于10！");
                 LoginServlet.writeFile("姓名长度小于等于10！\n");
@@ -110,7 +110,7 @@ public class AlterUser extends HttpServlet {
             }
         }
         if (!Objects.equals(sex, "")) {
-            sex = new String(sex.getBytes("ISO-8859-1"), "UTF-8");
+//            sex = new String(sex.getBytes("ISO-8859-1"), "UTF-8");
             if (!Objects.equals(sex, "男") && !Objects.equals(sex, "女")) {
                 System.out.println("性别只能是\"男\"或\"女\"!");
                 LoginServlet.writeFile("性别只能是\"男\"或\"女\"!\n");

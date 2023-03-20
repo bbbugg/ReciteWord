@@ -47,7 +47,7 @@ public class ChooseWords extends HttpServlet {
         }
 
         String username = request.getParameter("username");
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
         int wordNumber = Integer.parseInt(request.getParameter("wordnumber"));
         String bookname = request.getParameter("bookname");
 

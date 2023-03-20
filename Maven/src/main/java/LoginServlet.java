@@ -66,8 +66,8 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
-        userpassword = new String(userpassword.getBytes("ISO-8859-1"), "UTF-8");
+//        username = new String(username.getBytes("ISO-8859-1"), "UTF-8");
+//        userpassword = new String(userpassword.getBytes("ISO-8859-1"), "UTF-8");
         System.out.println("username=" + username);
         writeFile("username=" + username + "\n");
         System.out.println("userpassword=" + userpassword);
